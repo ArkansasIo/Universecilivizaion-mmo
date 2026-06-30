@@ -120,8 +120,8 @@ const Universe3DPage = lazy(() => import('../pages/universe-3d/page'));
 
 const FoodWaterDiseasePage = lazy(() => import('../pages/food-water-disease/page'));
 
-import ShipCustomizationPage from '../pages/ship-customization/page';
-import CampaignPage from '../pages/campaign/page';
+const ShipCustomizationPage = lazy(() => import('../pages/ship-customization/page'));
+const CampaignPage = lazy(() => import('../pages/campaign/page'));
 // ── New imports for the Power Grid
 const PowerGridPage = lazy(() => import('../pages/power-grid/page'));
 const ReactorResearchPage = lazy(() => import('../pages/reactor-research/page'));

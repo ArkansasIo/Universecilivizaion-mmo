@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, useRef } from 'react';
+import { useState, useEffect, createContext, useContext, useRef, lazy, Suspense } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useResources } from '../../hooks/useResources';
@@ -6,10 +6,11 @@ import { useGameTime } from '../../hooks/useGameTime';
 import { GAME_TIME_CONFIG } from '../../config/gameConfig';
 import NotificationBell from './NotificationBell';
 import ThemeSwitcher from './ThemeSwitcher';
-import RightSidePanel from './RightSidePanel';
-import ViewportControls from './ViewportControls';
-import GameEventCenter from './GameEventCenter';
-import AchievementToastContainer from './AchievementToast';
+
+const RightSidePanel = lazy(() => import('./RightSidePanel'));
+const ViewportControls = lazy(() => import('./ViewportControls'));
+const GameEventCenter = lazy(() => import('./GameEventCenter'));
+const AchievementToastContainer = lazy(() => import('./AchievementToast'));
 
 /* ─────────────────────────────────────────────
    SIDEBAR CONTEXT
@@ -1008,22 +1009,30 @@ export default function GameLayout({ children }: { children: React.ReactNode }) 
         {children}
       </main>
 
-      <RightSidePanel
-        open={rightPanelOpen}
-        onClose={() => setRightPanelOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <RightSidePanel
+          open={rightPanelOpen}
+          onClose={() => setRightPanelOpen(false)}
+        />
+      </Suspense>
 
-      <GameEventCenter
-        open={eventCenterOpen}
-        onClose={() => setEventCenterOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <GameEventCenter
+          open={eventCenterOpen}
+          onClose={() => setEventCenterOpen(false)}
+        />
+      </Suspense>
 
-      <ViewportControls
-        onToggleRightPanel={() => setRightPanelOpen((v) => !v)}
-        isGalaxyPage={isGalaxyPage}
-      />
+      <Suspense fallback={null}>
+        <ViewportControls
+          onToggleRightPanel={() => setRightPanelOpen((v) => !v)}
+          isGalaxyPage={isGalaxyPage}
+        />
+      </Suspense>
 
-      <AchievementToastContainer />
+      <Suspense fallback={null}>
+        <AchievementToastContainer />
+      </Suspense>
     </SidebarContext.Provider>
   );
 }
