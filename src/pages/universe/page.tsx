@@ -23,6 +23,9 @@ export default function UniversePage() {
 
   const [objectFilter, setObjectFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedUniverse, setSelectedUniverse] = useState<any>(null);
+  const [selectedGalaxy, setSelectedGalaxy] = useState<any>(null);
+  const [, setSelectedObject] = useState<any>(null);
 
   const universes = [
     { id: 'universe-alpha', name: 'Universe Alpha', type: 'Standard', status: 'discovered', players: 15420, galaxies: 8, description: 'A balanced universe with standard physics and moderate resources.', characteristics: ['Balanced resources', 'Moderate NPC activity', 'Standard physics'], dangerLevel: 5, galaxyType: 'spiral' as const, imageSeq: 4001 },
@@ -79,7 +82,28 @@ export default function UniversePage() {
     } catch { /* ignore */ }
   };
 
-
+  const getObjectIcon = (type: string) => {
+    switch (type) {
+      case 'asteroid':
+        return 'ri-meteor-line';
+      case 'nebula':
+        return 'ri-cloud-line';
+      case 'black_hole':
+        return 'ri-focus-3-line';
+      case 'wormhole':
+        return 'ri-loop-left-line';
+      case 'pulsar':
+        return 'ri-radio-button-line';
+      case 'quasar':
+        return 'ri-sun-foggy-line';
+      case 'supernova':
+        return 'ri-fire-line';
+      case 'comet':
+        return 'ri-rocket-line';
+      default:
+        return 'ri-star-line';
+    }
+  };
 
   const filteredObjects = objects.filter(obj => {
     const matchesFilter = objectFilter === 'all' || obj.type === objectFilter;

@@ -132,10 +132,6 @@ export function useFleetManager() {
     return () => clearInterval(interval);
   }, [user, activeFleets]);
 
-  // Keep refs in sync
-  handleFleetArrivalRef.current = handleFleetArrival as any;
-  handleFleetReturnRef.current = handleFleetReturn as any;
-
   const calculateTravelTime = (ships: Record<string, number>, origin: string, destination: string): number => {
     // Parse coordinates
     const parseCoords = (coords: string) => {
@@ -354,6 +350,10 @@ export function useFleetManager() {
       console.error('Error handling fleet return:', error);
     }
   };
+
+  // Keep refs in sync after handlers are initialized.
+  handleFleetArrivalRef.current = handleFleetArrival;
+  handleFleetReturnRef.current = handleFleetReturn;
 
   const executeCombatMission = async (fleet: Fleet): Promise<CombatResult> => {
     // Simplified combat simulation

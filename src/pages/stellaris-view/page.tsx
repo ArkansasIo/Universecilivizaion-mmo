@@ -68,6 +68,49 @@ const DIPLO_LABEL: Record<string, { label: string; color: string }> = {
   subject:    { label: 'Subject',    color: '#a78bfa' },
 };
 
+const RESOURCE_STRIP = [
+  { label: 'Energy', value: '+846', icon: 'ri-flashlight-line', color: '#9a6a00' },
+  { label: 'Minerals', value: '+612', icon: 'ri-copper-coin-line', color: '#5f6670' },
+  { label: 'Food', value: '+318', icon: 'ri-seedling-line', color: '#197a48' },
+  { label: 'Alloys', value: '+144', icon: 'ri-tools-line', color: '#334155' },
+  { label: 'Influence', value: '6.2', icon: 'ri-star-line', color: '#6d5a00' },
+  { label: 'Unity', value: '+92', icon: 'ri-government-line', color: '#4338ca' },
+  { label: 'Research', value: '1.8K', icon: 'ri-flask-line', color: '#0369a1' },
+];
+
+const MENU_GROUPS = [
+  {
+    id: 'council',
+    label: 'Council',
+    icon: 'ri-government-line',
+    items: ['Agenda', 'Edicts', 'Policies', 'Leaders'],
+  },
+  {
+    id: 'outliner',
+    label: 'Outliner',
+    icon: 'ri-list-check-3',
+    items: ['Colonies', 'Fleets', 'Starbases', 'Megastructures'],
+  },
+  {
+    id: 'fleet',
+    label: 'Fleet',
+    icon: 'ri-rocket-2-line',
+    items: ['Ship Designer', 'Fleet Manager', 'Reinforce', 'Patrols'],
+  },
+  {
+    id: 'economy',
+    label: 'Economy',
+    icon: 'ri-exchange-dollar-line',
+    items: ['Market', 'Trade Routes', 'Sectors', 'Production'],
+  },
+  {
+    id: 'science',
+    label: 'Science',
+    icon: 'ri-microscope-line',
+    items: ['Research', 'Anomalies', 'Situation Log', 'Archaeology'],
+  },
+] as const;
+
 // ═══════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
@@ -960,6 +1003,84 @@ function Minimap({
 // ═══════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ═══════════════════════════════════════════════════════════════
+function CommandRibbon({
+  activeMenu,
+  onMenuChange,
+}: {
+  activeMenu: typeof MENU_GROUPS[number]['id'];
+  onMenuChange: (id: typeof MENU_GROUPS[number]['id']) => void;
+}) {
+  const active = MENU_GROUPS.find((m) => m.id === activeMenu) ?? MENU_GROUPS[0];
+
+  return (
+    <div className="silver-command-ribbon">
+      <div className="silver-resource-strip">
+        {RESOURCE_STRIP.map((r) => (
+          <div key={r.label} className="silver-resource-chip">
+            <i className={r.icon} style={{ color: r.color }}></i>
+            <span>{r.label}</span>
+            <strong style={{ color: r.color }}>{r.value}</strong>
+          </div>
+        ))}
+      </div>
+
+      <div className="silver-menu-row">
+        {MENU_GROUPS.map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            onClick={() => onMenuChange(m.id)}
+            className={active.id === m.id ? 'is-active' : ''}
+            title={m.label}
+          >
+            <i className={m.icon}></i>
+            <span>{m.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="silver-submenu-row">
+        {active.items.map((item) => (
+          <button key={item} type="button">
+            {item}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ViewportControlCluster({
+  mapLayer,
+  showFleets,
+  showHyperlanes,
+  showEmpireList,
+}: {
+  mapLayer: string;
+  showFleets: boolean;
+  showHyperlanes: boolean;
+  showEmpireList: boolean;
+}) {
+  const chips = [
+    { label: 'Viewport', value: mapLayer.toUpperCase(), icon: 'ri-radar-line' },
+    { label: 'Fleets', value: showFleets ? 'ON' : 'OFF', icon: 'ri-rocket-2-line' },
+    { label: 'Lanes', value: showHyperlanes ? 'ON' : 'OFF', icon: 'ri-share-line' },
+    { label: 'Outliner', value: showEmpireList ? 'OPEN' : 'HIDDEN', icon: 'ri-sidebar-fold-line' },
+  ];
+
+  return (
+    <div className="silver-viewport-cluster">
+      {chips.map((c) => (
+        <div key={c.label}>
+          <i className={c.icon}></i>
+          <span>{c.label}</span>
+          <strong>{c.value}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function StellarisViewPage() {
   const MAP_W = 1050;
   const MAP_H = 700;
@@ -983,6 +1104,7 @@ export default function StellarisViewPage() {
   const [showFleets, setShowFleets] = useState(true);
   const [showHyperlanes, setShowHyperlanes] = useState(true);
   const [timeAccel, setTimeAccel] = useState(1);
+  const [activeMenu, setActiveMenu] = useState<typeof MENU_GROUPS[number]['id']>('outliner');
 
   // Animated fleet positions
   const [fleets, setFleets] = useState<Fleet[]>(FLEETS);
@@ -1090,7 +1212,7 @@ export default function StellarisViewPage() {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{ background: '#020508', zIndex: 0 }}>
+    <div className="stellaris-silver-shell fixed inset-0 flex flex-col overflow-hidden" style={{ background: '#f3f5f8', zIndex: 0 }}>
 
       {/* ── CSS Ticker Animation ──────────────────────── */}
       <style>{`
@@ -1101,6 +1223,161 @@ export default function StellarisViewPage() {
         .animate-ticker-scroll {
           animation: ticker-scroll linear infinite;
           width: max-content;
+        }
+        .stellaris-silver-shell {
+          color: #0f172a;
+          background:
+            linear-gradient(180deg, #ffffff 0%, #eef2f7 42%, #d8dee7 100%);
+        }
+        .stellaris-silver-shell .text-white,
+        .stellaris-silver-shell .text-gray-400,
+        .stellaris-silver-shell .text-gray-500,
+        .stellaris-silver-shell .text-gray-600 {
+          color: #111827 !important;
+        }
+        .stellaris-silver-shell button {
+          border-radius: 6px !important;
+        }
+        .stellaris-silver-shell > .flex.items-center.h-12,
+        .stellaris-silver-shell > .flex.items-center.overflow-hidden,
+        .stellaris-silver-shell .silver-panel,
+        .stellaris-silver-shell [style*="rgba(2,5,15"],
+        .stellaris-silver-shell [style*="rgba(4, 8, 20"],
+        .stellaris-silver-shell [style*="rgba(4,8,22"] {
+          background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(230,236,244,0.96)) !important;
+          color: #0f172a !important;
+          border-color: rgba(86, 99, 118, 0.28) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 10px 28px rgba(15,23,42,0.12);
+        }
+        .stellaris-silver-shell a,
+        .stellaris-silver-shell button,
+        .stellaris-silver-shell span,
+        .stellaris-silver-shell p,
+        .stellaris-silver-shell h3 {
+          letter-spacing: 0;
+        }
+        .silver-command-ribbon {
+          display: grid;
+          grid-template-columns: minmax(420px, 1fr) auto;
+          grid-template-rows: 34px 38px;
+          gap: 0;
+          border-bottom: 1px solid rgba(86, 99, 118, 0.32);
+          background: linear-gradient(180deg, #fafafa 0%, #d9e0e9 100%);
+          box-shadow: inset 0 1px 0 #fff, 0 8px 18px rgba(15,23,42,0.12);
+          z-index: 45;
+        }
+        .silver-resource-strip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 10px;
+          overflow-x: auto;
+          border-right: 1px solid rgba(86,99,118,0.22);
+        }
+        .silver-resource-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          height: 24px;
+          padding: 0 9px;
+          border: 1px solid rgba(86,99,118,0.24);
+          background: linear-gradient(180deg, #fff, #edf1f5);
+          color: #111827;
+          font-size: 11px;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+        .silver-menu-row {
+          grid-row: 1 / span 2;
+          grid-column: 2;
+          display: flex;
+          align-items: stretch;
+          padding: 5px 10px;
+          gap: 6px;
+          border-left: 1px solid rgba(86,99,118,0.22);
+        }
+        .silver-menu-row button {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-width: 76px;
+          padding: 4px 9px;
+          border: 1px solid rgba(86,99,118,0.26);
+          background: linear-gradient(180deg, #ffffff, #e9edf3);
+          color: #111827;
+          font-size: 11px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+        .silver-menu-row button i {
+          font-size: 16px;
+          color: #334155;
+        }
+        .silver-menu-row button.is-active {
+          background: linear-gradient(180deg, #ffffff, #cfd8e3);
+          border-color: rgba(15,23,42,0.48);
+          box-shadow: inset 0 -2px 0 #111827;
+        }
+        .silver-submenu-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 10px;
+          border-top: 1px solid rgba(86,99,118,0.18);
+          overflow-x: auto;
+        }
+        .silver-submenu-row button {
+          height: 26px;
+          padding: 0 12px;
+          border: 1px solid rgba(86,99,118,0.26);
+          background: rgba(255,255,255,0.7);
+          color: #0f172a;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .silver-viewport-cluster {
+          position: absolute;
+          top: 54px;
+          right: 14px;
+          z-index: 22;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(92px, 1fr));
+          gap: 6px;
+          width: min(330px, calc(100% - 28px));
+        }
+        .silver-viewport-cluster div {
+          display: grid;
+          grid-template-columns: 18px 1fr auto;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 8px;
+          border: 1px solid rgba(86,99,118,0.28);
+          background: rgba(248,250,252,0.9);
+          color: #111827;
+          box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+          backdrop-filter: blur(10px);
+        }
+        .silver-viewport-cluster span {
+          font-size: 10px;
+          font-weight: 700;
+        }
+        .silver-viewport-cluster strong {
+          font-size: 10px;
+          color: #0369a1;
+        }
+        @media (max-width: 1100px) {
+          .silver-command-ribbon {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto;
+          }
+          .silver-menu-row {
+            grid-row: auto;
+            grid-column: auto;
+            overflow-x: auto;
+          }
         }
       `}</style>
 
@@ -1232,6 +1509,7 @@ export default function StellarisViewPage() {
 
       {/* ── GALACTIC EVENTS TICKER ──────────────────────── */}
       <GalacticTicker />
+      <CommandRibbon activeMenu={activeMenu} onMenuChange={setActiveMenu} />
 
       {/* ── MAIN CONTENT ROW ────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
@@ -1419,6 +1697,13 @@ export default function StellarisViewPage() {
               {warSystems.size} ACTIVE WAR ZONES — Iron Pact vs. Void Collective, Nexus Dominion vs. Void Collective
             </div>
           )}
+
+          <ViewportControlCluster
+            mapLayer={mapLayer}
+            showFleets={showFleets}
+            showHyperlanes={showHyperlanes}
+            showEmpireList={showEmpireList}
+          />
         </div>
 
         {/* ── RIGHT: EMPIRE DETAIL PANEL ────────────────── */}
