@@ -125,6 +125,7 @@ const CampaignPage = lazy(() => import('../pages/campaign/page'));
 // ── New imports for the Power Grid
 const PowerGridPage = lazy(() => import('../pages/power-grid/page'));
 const ReactorResearchPage = lazy(() => import('../pages/reactor-research/page'));
+const AlcPowerTechPage = lazy(() => import('../pages/alc-power-tech/page'));
 
 const routes: RouteObject[] = [
   // ── Public routes (no game shell) ──────────────────────────────────
@@ -169,6 +170,7 @@ const routes: RouteObject[] = [
       { path: '/food-water-disease', element: <FoodWaterDiseasePage /> },
       { path: '/power-grid', element: <PowerGridPage /> },
       { path: '/reactor-research', element: <ReactorResearchPage /> },
+      { path: '/alc-power-tech', element: <AlcPowerTechPage /> },
 
       // Military
       { path: '/fleet', element: <FleetPage /> },

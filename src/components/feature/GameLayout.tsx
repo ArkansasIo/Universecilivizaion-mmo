@@ -74,8 +74,18 @@ const NAV_SECTIONS: NavSection[] = [
       { label: 'Megastructures', path: '/megastructures', icon: 'ri-planet-fill' },
       { label: 'Travel Network', path: '/travel-network', icon: 'ri-route-line' },
       { label: 'Food · Water', path: '/food-water-disease', icon: 'ri-heart-pulse-line' },
-      { label: 'Power Grid', path: '/power-grid', icon: 'ri-flashlight-line', badge: 'NEW' },
+    ],
+  },
+  {
+    id: 'alc-power',
+    label: 'ALC Power Systems',
+    icon: 'ri-flashlight-fill',
+    color: '#06b6d4',
+    items: [
+      { label: 'Power Grid', path: '/power-grid', icon: 'ri-flashlight-line' },
+      { label: 'ALC Power Tech Tree', path: '/alc-power-tech', icon: 'ri-git-branch-line', badge: 'TECH' },
       { label: 'Reactor Blueprints', path: '/reactor-research', icon: 'ri-file-code-line', badge: 'R&D' },
+      { label: 'Energy Storage', path: '/storage?tab=energy', icon: 'ri-battery-line' },
     ],
   },
   {

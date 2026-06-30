@@ -58,6 +58,18 @@ const RIGHT_SECTIONS = [
     ],
   },
   {
+    id: 'power',
+    label: 'ALC POWER SYSTEMS',
+    icon: 'ri-flashlight-fill',
+    color: '#06b6d4',
+    items: [
+      { label: 'Power Grid', path: '/power-grid', icon: 'ri-flashlight-line', desc: 'Grid management & distribution' },
+      { label: 'ALC Power Tech Tree', path: '/alc-power-tech', icon: 'ri-git-branch-line', badge: 'TECH', desc: 'Research ALC power technologies' },
+      { label: 'Reactor Research', path: '/reactor-research', icon: 'ri-file-code-line', badge: 'R&D', desc: 'Reactor blueprints & technology' },
+      { label: 'Energy Storage', path: '/storage?tab=energy', icon: 'ri-battery-line', desc: 'Battery & capacitor banks' },
+    ],
+  },
+  {
     id: 'economy',
     label: 'ECONOMY',
     icon: 'ri-exchange-line',

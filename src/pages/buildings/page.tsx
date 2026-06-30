@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResources } from '@/hooks/useResources';
@@ -6,6 +7,7 @@ import { useBuildingQueue } from '@/hooks/useBuildingQueue';
 import { calculateBuildingCost, calculateBuildTime, formatTime, formatNumber } from '@/utils/gameCalculations';
 import { getBuildingArt } from '@/data/gameArtwork';
 import ColonySelector, { Planet } from '@/pages/buildings/components/ColonySelector';
+import PageLoading from '@/components/PageLoading';
 
 interface Building {
   id: string;
@@ -160,14 +162,7 @@ export default function BuildingsPage() {
   }, [user, planetId, queue, buildingsMap, canAfford, deductResources, addToQueue, showToast]);
 
   if (loadingPage) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 mb-4" style={{ borderColor: '#d4a853' }}></div>
-          <div className="text-sm" style={{ color: '#8892aa' }}>Loading buildings...</div>
-        </div>
-      </div>
-    );
+    return <PageLoading message="Loading buildings..." className="h-64 text-[#d4a853]" />;
   }
 
   if (error) {
@@ -189,6 +184,44 @@ export default function BuildingsPage() {
   });
 
   const totalBuildingLevel = buildings.reduce((s, b) => s + b.level, 0);
+  const constructionSystems = [
+    {
+      id: 'robotics_factory',
+      label: 'Robotics Factory',
+      route: '/buildings',
+      level: buildingsMap.robotics_factory ?? 0,
+      icon: 'ri-robot-line',
+      color: '#34d399',
+      detail: 'Planetary construction speed',
+    },
+    {
+      id: 'shipyard',
+      label: 'Shipyard',
+      route: '/shipyard',
+      level: buildingsMap.shipyard ?? 0,
+      icon: 'ri-rocket-2-line',
+      color: '#5bc0be',
+      detail: 'Starship construction yard',
+    },
+    {
+      id: 'nanite_factory',
+      label: 'Nanite Factory',
+      route: '/buildings',
+      level: buildingsMap.nanite_factory ?? 0,
+      icon: 'ri-cpu-line',
+      color: '#a78bfa',
+      detail: 'Advanced assembly acceleration',
+    },
+    {
+      id: 'power_grid',
+      label: 'Power Grid',
+      route: '/power-grid',
+      level: (buildingsMap.solar_plant ?? 0) + (buildingsMap.fusion_reactor ?? 0),
+      icon: 'ri-flashlight-line',
+      color: '#e2c044',
+      detail: 'Energy supply for build systems',
+    },
+  ];
 
   return (
     <div style={{ color: '#8892aa' }}>
@@ -269,6 +302,77 @@ export default function BuildingsPage() {
 
         {!loadingBuildings && (
           <>
+            <div className="mb-4 rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.018)', border: '1px solid #1e2a36' }}>
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#d4a853' }}>Construction Systems</p>
+                  <h2 className="text-xl font-black text-white">Factories, Shipyards, and Build Lanes</h2>
+                </div>
+                <div className="rounded-lg px-3 py-2 text-xs font-bold" style={{ background: 'rgba(212,168,83,0.08)', color: '#d4a853', border: '1px solid rgba(212,168,83,0.2)' }}>
+                  Infrastructure Power {totalBuildingLevel.toLocaleString()}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                {constructionSystems.map(system => (
+                  <Link
+                    key={system.id}
+                    to={system.route}
+                    className="rounded-lg p-3 transition hover:brightness-125"
+                    style={{ background: `${system.color}08`, border: `1px solid ${system.color}20` }}
+                  >
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: `${system.color}14` }}>
+                        <i className={`${system.icon} text-lg`} style={{ color: system.color }} />
+                      </div>
+                      <span className="text-xs font-black" style={{ color: system.color }}>Lv.{system.level}</span>
+                    </div>
+                    <p className="text-sm font-bold text-white">{system.label}</p>
+                    <p className="mt-1 text-xs leading-5" style={{ color: '#5a6577' }}>{system.detail}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* ALC Power Systems Context Bar */}
+            <div className="mb-4 p-3 rounded-xl flex items-center gap-3" style={{ background: 'rgba(6,182,212,0.04)', border: '1px solid rgba(6,182,212,0.15)' }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(6,182,212,0.12)' }}>
+                <i className="ri-flashlight-fill text-sm" style={{ color: '#06b6d4' }}></i>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold tracking-wider" style={{ color: '#06b6d4' }}>ALC POWER SYSTEMS</span>
+                  <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: 'rgba(6,182,212,0.12)', color: '#06b6d4', fontSize: 9 }}>ENDFIELD</span>
+                </div>
+                <div className="flex items-center gap-3 mt-0.5">
+                  <span className="text-xs" style={{ color: '#5a6577' }}>
+                    Solar Lv.{buildingsMap.solar_plant ?? 0}
+                  </span>
+                  <span className="text-xs" style={{ color: '#5a6577' }}>
+                    Fusion Lv.{buildingsMap.fusion_reactor ?? 0}
+                  </span>
+                  <span className="text-xs text-transparent bg-clip-text font-semibold" style={{ backgroundImage: 'linear-gradient(90deg, #06b6d4, #22d3ee)' }}>
+                    {(buildingsMap.solar_plant ?? 0) * 75 + (buildingsMap.fusion_reactor ?? 0) * 250} MW
+                  </span>
+                </div>
+              </div>
+              <Link
+                to="/power-grid"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer whitespace-nowrap transition-all hover:brightness-110"
+                style={{ background: 'rgba(6,182,212,0.1)', color: '#06b6d4', border: '1px solid rgba(6,182,212,0.25)' }}
+              >
+                <i className="ri-flashlight-line"></i>
+                Power Grid
+              </Link>
+              <Link
+                to="/reactor-research"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer whitespace-nowrap transition-all hover:brightness-110"
+                style={{ background: 'rgba(168,85,247,0.1)', color: '#a855f7', border: '1px solid rgba(168,85,247,0.25)' }}
+              >
+                <i className="ri-file-code-line"></i>
+                Reactors
+              </Link>
+            </div>
+
             {/* Active Build Queue */}
             {queue.length > 0 && (
               <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(212,168,83,0.03)', border: '1px solid rgba(212,168,83,0.15)' }}>

@@ -256,6 +256,43 @@ export default function StoragePage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-12">
+        {/* ALC Power Systems Context Bar */}
+        <div className="mb-6 p-3 rounded-xl flex items-center gap-3" style={{ background: 'rgba(6,182,212,0.04)', border: '1px solid rgba(6,182,212,0.15)' }}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(6,182,212,0.12)' }}>
+            <i className="ri-flashlight-fill text-sm" style={{ color: '#06b6d4' }}></i>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold tracking-wider" style={{ color: '#06b6d4' }}>ALC POWER SYSTEMS</span>
+              <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: 'rgba(6,182,212,0.12)', color: '#06b6d4', fontSize: 9 }}>ENDFIELD</span>
+            </div>
+            <div className="flex items-center gap-3 mt-0.5">
+              <span className="text-xs" style={{ color: '#5a6577' }}>
+                Total Capacity: <span className="font-semibold" style={{ color: '#22d3ee' }}>{(totalCapacity / 1000000).toFixed(1)}M</span>
+              </span>
+              <span className="text-xs" style={{ color: '#5a6577' }}>
+                Avg Efficiency: <span className="font-semibold" style={{ color: '#22d3ee' }}>{averageEfficiency}%</span>
+              </span>
+            </div>
+          </div>
+          <Link
+            to="/power-grid"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer whitespace-nowrap transition-all hover:brightness-110"
+            style={{ background: 'rgba(6,182,212,0.1)', color: '#06b6d4', border: '1px solid rgba(6,182,212,0.25)' }}
+          >
+            <i className="ri-flashlight-line"></i>
+            Power Grid
+          </Link>
+          <Link
+            to="/reactor-research"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer whitespace-nowrap transition-all hover:brightness-110"
+            style={{ background: 'rgba(168,85,247,0.1)', color: '#a855f7', border: '1px solid rgba(168,85,247,0.25)' }}
+          >
+            <i className="ri-file-code-line"></i>
+            Reactors
+          </Link>
+        </div>
+
         {/* Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-cyan-400/30 rounded-2xl p-6">
