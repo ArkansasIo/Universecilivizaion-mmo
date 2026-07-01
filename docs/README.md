@@ -16,6 +16,7 @@
 | [Utils](utils/) | Utility functions | [README](utils/README.md) |
 | [Types](types/) | TypeScript type definitions | [README](types/README.md) |
 | [Supabase](supabase/) | 17 edge functions | [README](supabase/README.md) |
+| OGame Test | OGame 0.84 sandbox documentation pack | [README](../ogame%20test/README.md) |
 
 ## Project Overview
 
