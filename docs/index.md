@@ -62,6 +62,9 @@ docs/
     gameConfig.md       — Central game configuration
     paths.md            — Asset path configuration
     ui.md               — UI theme & layout configuration
+  backend/
+    README.md           ← Server-side overview
+    UML.md              ← Backend component, sequence, and ER diagrams
 ```
 
 ## File Pattern

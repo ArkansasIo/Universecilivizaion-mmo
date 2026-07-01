@@ -16,6 +16,7 @@
 | [Utils](utils/) | Utility functions | [README](utils/README.md) |
 | [Types](types/) | TypeScript type definitions | [README](types/README.md) |
 | [Supabase](supabase/) | 17 edge functions | [README](supabase/README.md) |
+| [Backend](backend/) | Server-side logic, SQL data, UML | [README](backend/README.md) |
 
 ## Project Overview
 
